@@ -1,0 +1,39 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('pembayarans', function (Blueprint $table) {
+
+            $table->id();
+
+            $table->foreignId('peminjaman_id')
+                ->constrained('peminjamans')
+                ->cascadeOnDelete();
+
+            $table->string('metode');
+
+            $table->decimal('jumlah', 12, 2);
+
+            $table->string('bukti');
+
+            $table->enum('status', [
+                'pending',
+                'verified',
+                'rejected'
+            ])->default('pending');
+
+            $table->timestamp('dibayar_pada')
+                ->nullable();
+
+            $table->timestamps();
+        });
+    }
+};

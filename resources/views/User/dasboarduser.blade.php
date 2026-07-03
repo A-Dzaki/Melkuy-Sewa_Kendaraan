@@ -19,9 +19,9 @@
                 <div class="flex justify-between items-center h-16">
 
                     <!-- LOGO BRAND -->
-                    <div class="flex-shrink-0">
+                    <div class="shrink-0">
                         <a href="#"
-                            class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-gray-900 via-indigo-950 to-indigo-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity">
+                            class="text-2xl font-extrabold tracking-tight bg-linear-to-r from-gray-900 via-indigo-950 to-indigo-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity">
                             Melakuy
                         </a>
                     </div>
@@ -65,7 +65,7 @@
         <main class="w-full min-h-screen bg-gray-50">
 
             <section class="w-full aspect-video md:aspect-vidio bg-cover bg-center relative flex items-center id="Home"
-                style="background-image: url('{{ asset('storage/images/photo-1469854523086-cc02fe5d8800.jpg') }}');">
+                style="background-image: url('{{ asset('storage/images/Bacground.jpg') }}');">
                 <!-- Overlay Gradasi Gelap -->
                 <div class="absolute inset-0 bg-linear-to-r from-black/80 via-black/50 to-transparent"></div>
 
@@ -100,14 +100,14 @@
                             </div>
 
                             <form action="#" method="GET">
-                                <div class="grid grid-cols-1 gap-4 md:grid-cols-[1.2fr_1fr_auto] md:items-end">
+                                <div class="grid grid-cols-1 gap-4 md:grid-cols-4 md:items-end">
                                     <!-- Untuk Menampilkan Pilihan Brand yang ada di database -->
                                     <div class="flex flex-col gap-2">
                                         <label for="brand" class="text-sm font-semibold text-gray-700">Brand</label>
                                         <select id="brand" name="brand"
-                                            class="h-12 w-full rounded-2xl border border-gray-200 bg-gray-50">
+                                            class="h-12 w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 text-gray-700 transition-all duration-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                             <option value="">Semua Brand</option>
-                                            <!-- Tambahkan opsi brand dari database di sini -->
+                                            <!-- Opsi brand akan diisi otomatis oleh database -->
                                         </select>
                                     </div>
 
@@ -125,7 +125,8 @@
                                         <label for="jenis-kendaraan" class="text-sm font-semibold text-gray-700">Jenis
                                             Kendaraan</label>
                                         <select id="jenis-kendaraan" name="jenis-kendaraan"
-                                            class="h-12 w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 text-gray-700 transition-all duration-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="h-12 w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 text-gray-700 transition-all duration-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                            placeholder="Pilih Jenis Kendaraan">
                                             <option value="">Pilih Jenis Kendaraan</option>
                                             <option value="mobil">Mobil</option>
                                             <option value="motor">Motor</option>
@@ -150,7 +151,28 @@
             </section>
 
         </main>
-        <footer></footer>
+        <footer>
+            <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3">
+                <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-6">
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-900">Melakuy</h2>
+                        <p class="mt-1 text-sm text-gray-600">Temukan dan pinjam kendaraan dengan mudah di Surabaya.
+                        </p>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <div>
+                            WhatsApp: <a href="https://wa.me/6281234567890"
+                                class="text-indigo-600 hover:underline">+62 812-3456-7890</a>
+                        </div>
+                        <div>
+                            Instagram: <a href="https://www.instagram.com/melakuy/"
+                                class="text-indigo-600 hover:underline">@melakuy</a>
+                        </div>
+                    </div>
+                </div>
+                <p class="mt-8 text-sm text-gray-400">&copy; 2024 Melakuy. All rights reserved.</p>
+            </div>
+        </footer>
     </body>
 
 </html>
