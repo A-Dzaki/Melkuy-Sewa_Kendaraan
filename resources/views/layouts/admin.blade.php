@@ -17,8 +17,7 @@
         <!-- CSS & JS Assets -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-        <!-- Alpine.js -->
-        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+        {{-- Alpine.js sudah di-bundle oleh Livewire 4, JANGAN load ulang via CDN --}}
 
         <style>
             body {
@@ -82,9 +81,9 @@
                     <p class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Manajemen</p>
                 </div>
 
-                <a href="#"
-                    class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-300 hover:bg-slate-800 hover:text-white transition-colors group">
-                    <svg class="w-5 h-5 shrink-0 text-slate-400 group-hover:text-white transition-colors" fill="none"
+                <a href="{{ route('admin.kendaraan') }}" wire:navigate
+                    class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold {{ request()->routeIs('admin.kendaraan*') ? 'bg-indigo-500/10 text-indigo-400' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }} transition-colors group">
+                    <svg class="w-5 h-5 shrink-0 {{ request()->routeIs('admin.kendaraan*') ? 'text-indigo-400' : 'text-slate-400 group-hover:text-white' }} transition-colors" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />

@@ -10,7 +10,7 @@ layout('layouts.user');
     <section class="relative w-full min-h-[calc(100vh-5rem)] flex items-center bg-slate-900 overflow-hidden">
         <!-- Background Image with Overlay -->
         <div class="absolute inset-0 z-0">
-            <img src="{{ asset('storage/images/Bacground.jpg') }}" alt="Melakuy Background"
+            <img src="{{ asset('storage/image/Bacground.jpg') }}" alt="Melakuy Background"
                 class="w-full h-full object-cover object-center opacity-60 mix-blend-overlay">
             <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent"></div>
         </div>

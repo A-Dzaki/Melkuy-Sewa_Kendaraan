@@ -2,9 +2,19 @@
 
 use function Livewire\Volt\layout;
 use function Livewire\Volt\title;
+use function Livewire\Volt\with;
+use App\Models\Kendaraan;
+use Illuminate\Support\Str;
 
 layout('layouts.user');
 title('Katalog Kendaraan - Melakuy');
+
+with(fn () => [
+    'kendaraans' => Kendaraan::with('images')
+        ->where('status', 'tersedia')
+        ->latest()
+        ->get()
+]);
 
 ?>
 <div class="bg-slate-50 min-h-screen pb-20">
@@ -56,11 +66,16 @@ title('Katalog Kendaraan - Melakuy');
     <!-- Kendaraan Grid -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
 
-        @if (isset($kendaraans) && count($kendaraans) > 0)
+        @if ($kendaraans->isNotEmpty())
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 @foreach ($kendaraans as $kendaraan)
-                    <x-card :title="$kendaraan->name" :description="$kendaraan->description" :image="asset('storage/' . $kendaraan->image_path)" :price="'Rp' . number_format($kendaraan->price, 0, ',', '.')" status="Tersedia"
-                        {{-- Asumsi ada status 'Tersedia' dari DB, sementara dihardcode --}} {{-- link="{{ route('user.detail', $kendaraan->id) }}" --}} link="#" />
+                    <x-card 
+                        :title="$kendaraan->nama" 
+                        :description="Str::limit($kendaraan->deskripsi, 80)" 
+                        :image="$kendaraan->thumbnail_url" 
+                        :price="'Rp ' . number_format($kendaraan->harga_sewa, 0, ',', '.')" 
+                        status="Tersedia"
+                        link="{{ route('user.detail', $kendaraan->id) }}" />
                 @endforeach
             </div>
         @else

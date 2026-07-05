@@ -1,3 +1,4 @@
+<!-- halaman login untuk admin saja ya sob jangan di ganti ganti -->
 <!DOCTYPE html>
 <html lang="id">
 
@@ -56,7 +57,7 @@
             <!-- Box Form Login -->
             <div class="bg-white p-8 rounded-2xl border border-slate-200/60 shadow-xl shadow-slate-200/30">
                 <!-- Form Konten -->
-                <form action="#" method="POST" @submit="isSubmitting = true" class="space-y-5">
+                <form action="{{ route('login.post') }}" method="POST" @submit="isSubmitting = true" class="space-y-5">
                     @csrf
 
                     <!-- Input Email -->
@@ -65,9 +66,12 @@
                             class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Email
                             Administrator</label>
                         <input id="email" name="email" type="email" autocomplete="email" required
-                            :disabled="isGoogleLoading"
-                            class="block w-full h-11 rounded-xl border border-slate-200 bg-slate-50/50 px-4 text-slate-900 text-sm focus:border-slate-900 focus:bg-white focus:ring-4 focus:ring-slate-900/5 transition-all outline-none disabled:opacity-50"
+                            :disabled="isGoogleLoading" value="{{ old('email') }}"
+                            class="block w-full h-11 rounded-xl border border-slate-200 bg-slate-50/50 px-4 text-slate-900 text-sm focus:border-slate-900 focus:bg-white focus:ring-4 focus:ring-slate-900/5 transition-all outline-none disabled:opacity-50 @error('email') border-rose-500 @enderror"
                             placeholder="nama@melakuy.com">
+                        @error('email')
+                            <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- Input Password dengan Scope Alpine Mandiri -->

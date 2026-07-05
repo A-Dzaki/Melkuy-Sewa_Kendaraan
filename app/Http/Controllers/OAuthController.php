@@ -32,11 +32,16 @@ class OAuthController extends Controller
 
             if ($user) {
                 // Tambahan Proteksi: Pastikan user tersebut memang memiliki hak akses ADMIN
-                // (Sesuaikan dengan sistem role-mu, misal kolom 'role' atau 'is_admin')
-                if ($user->role !== 'admin') {
+                if (! $user->isAdmin()) {
                     return redirect()->route('login')
                         ->with('error', 'Akses ditolak. Akun Google Anda bukan akun administrator.');
                 }
+
+                // Update google_id dan avatar jika belum tersimpan
+                $user->update([
+                    'google_id' => $googleUser->getId(),
+                    'avatar' => $googleUser->getAvatar(),
+                ]);
 
                 // 2. Jika dia admin dan terdaftar, langsung login-kan
                 Auth::login($user, true); // true untuk 'remember me'
