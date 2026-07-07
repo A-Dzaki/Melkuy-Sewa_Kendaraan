@@ -44,6 +44,7 @@ mount(function (Peminjaman $peminjaman) {
                 
                 @php
                     $statusConfig = match($peminjaman->status) {
+                        'pending' => ['label' => 'Menunggu Pembayaran', 'bg' => 'bg-amber-100', 'text' => 'text-amber-700', 'icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'],
                         'menunggu_pembayaran' => ['label' => 'Belum Dibayar', 'bg' => 'bg-amber-100', 'text' => 'text-amber-700', 'icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'],
                         'menunggu_verifikasi' => ['label' => 'Menunggu Verifikasi', 'bg' => 'bg-blue-100', 'text' => 'text-blue-700', 'icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'],
                         'disetujui' => ['label' => 'Disetujui', 'bg' => 'bg-emerald-100', 'text' => 'text-emerald-700', 'icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'],
@@ -120,7 +121,7 @@ mount(function (Peminjaman $peminjaman) {
                         Simpan/Cetak Tiket
                     </button>
                     
-                    @if($peminjaman->status === 'menunggu_pembayaran')
+                    @if(in_array($peminjaman->status, ['pending', 'menunggu_pembayaran']))
                         <a href="{{ route('user.pembayaran', $peminjaman->id) }}" wire:navigate class="px-6 py-3 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-500 shadow-lg shadow-indigo-600/30 transition-all text-center flex items-center justify-center gap-2">
                             Selesaikan Pembayaran
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
