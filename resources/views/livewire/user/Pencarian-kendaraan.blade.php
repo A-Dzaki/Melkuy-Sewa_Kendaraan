@@ -3,6 +3,7 @@
 use function Livewire\Volt\layout;
 use function Livewire\Volt\title;
 use function Livewire\Volt\state;
+use function Livewire\Volt\mount;
 use function Livewire\Volt\computed;
 use App\Models\Kendaraan;
 use Illuminate\Support\Str;
@@ -22,7 +23,20 @@ $cari = function () {
     $this->sudahCari = true;
 };
 
-$reset = function () {
+// Baca query params dari URL (dikirim dari form home page)
+mount(function () {
+    $this->brand           = request('brand', '');
+    $this->transmisi       = request('transmisi', '');
+    $this->jenis_kendaraan = request('jenis_kendaraan', '');
+    $this->harga           = request('harga', '');
+
+    // Jika ada parameter apapun, langsung tampilkan hasil
+    if ($this->brand || $this->transmisi || $this->jenis_kendaraan || $this->harga) {
+        $this->sudahCari = true;
+    }
+});
+
+$resetFilter = function () {
     $this->jenis_kendaraan = '';
     $this->brand           = '';
     $this->transmisi       = '';
@@ -88,11 +102,12 @@ $hasil = computed(function () {
                         <div class="flex flex-col gap-2">
                             <label for="jenis_kendaraan" class="text-sm font-semibold text-slate-700">Jenis Kendaraan</label>
                             <div class="relative">
-                                <select id="jenis_kendaraan" wire:model="jenis_kendaraan"
+                                <select id="jenis_kendaraan"
+                                    wire:change="$set('jenis_kendaraan', $event.target.value)"
                                     class="h-12 w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 px-4 text-slate-700 transition-all duration-200 focus:bg-white focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 cursor-pointer">
-                                    <option value="">Semua Jenis Kendaraan</option>
-                                    <option value="mobil">Mobil</option>
-                                    <option value="motor">Motor</option>
+                                    <option value="" @selected($jenis_kendaraan === '')>Semua Jenis Kendaraan</option>
+                                    <option value="mobil" @selected($jenis_kendaraan === 'mobil')>Mobil</option>
+                                    <option value="motor" @selected($jenis_kendaraan === 'motor')>Motor</option>
                                 </select>
                                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -106,13 +121,14 @@ $hasil = computed(function () {
                         <div class="flex flex-col gap-2">
                             <label for="brand" class="text-sm font-semibold text-slate-700">Brand Kendaraan</label>
                             <div class="relative">
-                                <select id="brand" wire:model="brand"
+                                <select id="brand"
+                                    wire:change="$set('brand', $event.target.value)"
                                     class="h-12 w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 px-4 text-slate-700 transition-all duration-200 focus:bg-white focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 cursor-pointer">
-                                    <option value="">Semua Brand</option>
-                                    <option value="honda">Honda</option>
-                                    <option value="yamaha">Yamaha</option>
-                                    <option value="toyota">Toyota</option>
-                                    <option value="daihatsu">Daihatsu</option>
+                                    <option value="" @selected($brand === '')>Semua Brand</option>
+                                    <option value="honda"    @selected($brand === 'honda')>Honda</option>
+                                    <option value="yamaha"   @selected($brand === 'yamaha')>Yamaha</option>
+                                    <option value="toyota"   @selected($brand === 'toyota')>Toyota</option>
+                                    <option value="daihatsu" @selected($brand === 'daihatsu')>Daihatsu</option>
                                 </select>
                                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -126,11 +142,12 @@ $hasil = computed(function () {
                         <div class="flex flex-col gap-2">
                             <label for="transmisi" class="text-sm font-semibold text-slate-700">Transmisi</label>
                             <div class="relative">
-                                <select id="transmisi" wire:model="transmisi"
+                                <select id="transmisi"
+                                    wire:change="$set('transmisi', $event.target.value)"
                                     class="h-12 w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 px-4 text-slate-700 transition-all duration-200 focus:bg-white focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 cursor-pointer">
-                                    <option value="">Semua Transmisi</option>
-                                    <option value="manual">Manual</option>
-                                    <option value="matic">Matic / Otomatis</option>
+                                    <option value="" @selected($transmisi === '')>Semua Transmisi</option>
+                                    <option value="manual" @selected($transmisi === 'manual')>Manual</option>
+                                    <option value="matic"  @selected($transmisi === 'matic')>Matic / Otomatis</option>
                                 </select>
                                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -144,12 +161,13 @@ $hasil = computed(function () {
                         <div class="flex flex-col gap-2">
                             <label for="harga" class="text-sm font-semibold text-slate-700">Range Harga Sewa/Hari</label>
                             <div class="relative">
-                                <select id="harga" wire:model="harga"
+                                <select id="harga"
+                                    wire:change="$set('harga', $event.target.value)"
                                     class="h-12 w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 px-4 text-slate-700 transition-all duration-200 focus:bg-white focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 cursor-pointer">
-                                    <option value="">Semua Harga</option>
-                                    <option value="<100k">&lt; Rp 100.000</option>
-                                    <option value="100k-300k">Rp 100.000 - Rp 300.000</option>
-                                    <option value=">300k">&gt; Rp 300.000</option>
+                                    <option value="" @selected($harga === '')>Semua Harga</option>
+                                    <option value="<100k"   @selected($harga === '<100k')>&lt; Rp 100.000</option>
+                                    <option value="100k-300k" @selected($harga === '100k-300k')>Rp 100.000 - Rp 300.000</option>
+                                    <option value=">300k"   @selected($harga === '>300k')>&gt; Rp 300.000</option>
                                 </select>
                                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -161,7 +179,7 @@ $hasil = computed(function () {
                     </div>
 
                     <div class="mt-10 pt-6 border-t border-slate-100 flex items-center justify-between gap-4">
-                        <button type="button" wire:click="reset"
+                        <button type="button" wire:click="resetFilter"
                             class="hidden md:inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-slate-300 text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 transition-colors">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -210,7 +228,7 @@ $hasil = computed(function () {
                         @if($this->jenis_kendaraan)
                             <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold border border-indigo-100">
                                 {{ ucfirst($this->jenis_kendaraan) }}
-                                <button wire:click="$set('jenis_kendaraan', '')" class="ml-1 hover:text-indigo-900">×</button>
+                                <button wire:click="$set('jenis_kendaraan', '')" wire:click.stop class="ml-1 hover:text-indigo-900">×</button>
                             </span>
                         @endif
                         @if($this->brand)
@@ -256,7 +274,7 @@ $hasil = computed(function () {
                         </div>
                         <h3 class="text-xl font-bold text-slate-900 mb-2">Kendaraan tidak ditemukan</h3>
                         <p class="text-slate-500 text-center max-w-sm mb-6">Coba ubah filter pencarian untuk menemukan kendaraan yang tersedia.</p>
-                        <button wire:click="reset"
+                        <button wire:click="resetFilter"
                             class="px-6 py-3 rounded-xl bg-indigo-600 text-white font-semibold text-sm hover:bg-indigo-500 transition-colors">
                             Reset & Coba Lagi
                         </button>
