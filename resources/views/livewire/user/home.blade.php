@@ -7,9 +7,9 @@ layout('layouts.user');
 ?>
 
 <div>
-    {{-- ══════════════════════════════════════════════ --}}
+    
     {{-- HERO SECTION                                   --}}
-    {{-- ══════════════════════════════════════════════ --}}
+    
     <section class="relative w-full min-h-[calc(100vh-5rem)] flex items-center bg-slate-900 overflow-hidden">
 
         {{-- Background Image --}}
