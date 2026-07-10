@@ -1,10 +1,18 @@
 <?php
 
+use App\Models\Peminjaman;
 use function Livewire\Volt\layout;
 use function Livewire\Volt\title;
+use function Livewire\Volt\with;
 
 layout('layouts.user');
 title('Riwayat Peminjaman - Melakuy');
+
+with(
+    fn() => [
+        'histories' => request('phone') ? Peminjaman::with('kendaraan')->where('no_hp', request('phone'))->latest()->get() : [],
+    ],
+);
 
 ?>
 <div class="min-h-screen bg-slate-50 py-12 lg:py-20">
@@ -84,23 +92,28 @@ title('Riwayat Peminjaman - Melakuy');
                                         <tr class="hover:bg-slate-50/50 transition-colors">
                                             <td class="px-6 py-4">
                                                 <span
-                                                    class="font-mono font-medium text-slate-900">{{ $history->kode ?? '#TRX-12345' }}</span>
+                                                    class="font-mono font-medium text-slate-900">{{ $history->kode_booking ?? '#TRX-12345' }}</span>
                                             </td>
                                             <td class="px-6 py-4">
                                                 <div class="flex flex-col">
                                                     <span
-                                                        class="font-bold text-slate-900">{{ $history->kendaraan->name ?? 'Honda Beat' }}</span>
-                                                    <span class="text-sm text-slate-500">Mobil / Matic</span>
+                                                        class="font-bold text-slate-900">{{ $history->kendaraan->nama ?? 'Kendaraan' }}</span>
+                                                    <span
+                                                        class="text-sm text-slate-500">{{ ucfirst($history->kendaraan->jenis ?? 'Mobil') }}
+                                                        /
+                                                        {{ ucfirst($history->kendaraan->transmisi ?? 'Matic') }}</span>
                                                 </div>
                                             </td>
                                             <td class="px-6 py-4">
-                                                <span class="text-sm text-slate-600">12 Okt 2026 - 15 Okt 2026</span>
+                                                <span
+                                                    class="text-sm text-slate-600">{{ $history->jadwal_sewa ?? '12 Okt 2026 - 15 Okt 2026' }}</span>
                                             </td>
                                             <td class="px-6 py-4">
-                                                <x-badge type="success">Selesai</x-badge>
+                                                <x-badge
+                                                    type="{{ $history->status_badge_type ?? 'default' }}">{{ $history->status_label ?? 'Unknown' }}</x-badge>
                                             </td>
                                             <td class="px-6 py-4 text-right">
-                                                <a href="#"
+                                                <a href="{{ route('user.history.detail', $history->id) }}"
                                                     class="inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">
                                                     Detail
                                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"

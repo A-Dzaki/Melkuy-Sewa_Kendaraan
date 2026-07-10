@@ -13,7 +13,7 @@ use Carbon\Carbon;
 layout('layouts.user');
 title('Pesan Kendaraan - Melakuy');
 
-state(['kendaraan', 'nama' => '', 'email' => '', 'no_hp' => '', 'nik' => '', 'alamat' => '', 'tanggal_pinjam' => '', 'tanggal_kembali' => '', 'lama_sewa' => 0, 'total_harga' => 0]);
+state(['kendaraan', 'nama' => '', 'no_hp' => '', 'alamat' => '', 'tanggal_pinjam' => '', 'tanggal_kembali' => '', 'lama_sewa' => 0, 'total_harga' => 0]);
 
 mount(function (Kendaraan $kendaraan) {
     $this->kendaraan = $kendaraan;
@@ -21,9 +21,7 @@ mount(function (Kendaraan $kendaraan) {
 
 rules([
     'nama' => 'required|string|max:255',
-    'email' => 'required|email|max:255',
     'no_hp' => 'required|string|max:20',
-    'nik' => 'required|string|size:16',
     'alamat' => 'required|string',
     'tanggal_pinjam' => 'required|date|after_or_equal:today',
     'tanggal_kembali' => 'required|date|after:tanggal_pinjam',
@@ -69,9 +67,9 @@ $save = function () {
         'kode_booking' => $kode_booking,
         'kendaraan_id' => $this->kendaraan->id,
         'nama' => $this->nama,
-        'email' => $this->email,
+       
         'no_hp' => $this->no_hp,
-        'nik' => $this->nik,
+     
         'alamat' => $this->alamat,
         'tanggal_pinjam' => $this->tanggal_pinjam,
         'tanggal_kembali' => $this->tanggal_kembali,
@@ -126,30 +124,6 @@ $save = function () {
                                     <span class="text-xs text-rose-500 font-semibold mt-1 block">{{ $message }}</span>
                                 @enderror
                             </div>
-
-                            {{-- NIK --}}
-                            <div>
-                                <label for="nik" class="block text-sm font-semibold text-slate-700 mb-2">Nomor
-                                    Induk Kependudukan (NIK) <span class="text-rose-500">*</span></label>
-                                <input type="text" id="nik" wire:model="nik" placeholder="16 Digit NIK"
-                                    class="w-full h-12 rounded-xl border border-slate-300 px-4 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all bg-white font-mono @error('nik') border-rose-500 ring-rose-500/10 @enderror">
-                                @error('nik')
-                                    <span class="text-xs text-rose-500 font-semibold mt-1 block">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            {{-- Email --}}
-                            <div>
-                                <label for="email" class="block text-sm font-semibold text-slate-700 mb-2">Email
-                                    <span class="text-rose-500">*</span></label>
-                                <input type="email" id="email" wire:model="email"
-                                    placeholder="Cth: budi@email.com"
-                                    class="w-full h-12 rounded-xl border border-slate-300 px-4 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all bg-white @error('email') border-rose-500 ring-rose-500/10 @enderror">
-                                @error('email')
-                                    <span class="text-xs text-rose-500 font-semibold mt-1 block">{{ $message }}</span>
-                                @enderror
-                            </div>
-
                             {{-- No HP --}}
                             <div>
                                 <label for="no_hp" class="block text-sm font-semibold text-slate-700 mb-2">Nomor

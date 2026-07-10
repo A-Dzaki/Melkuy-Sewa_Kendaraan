@@ -21,9 +21,7 @@ class Peminjaman extends Model
         'kode_booking',
         'kendaraan_id',
         'nama',
-        'email',
         'no_hp',
-        'nik',
         'alamat',
         'tanggal_pinjam',
         'tanggal_kembali',
@@ -93,9 +91,9 @@ class Peminjaman extends Model
     {
         return $query->where(function ($q) use ($search) {
             $q->where('kode_booking', 'ilike', "%{$search}%")
-              ->orWhere('nama', 'ilike', "%{$search}%")
-              ->orWhere('no_hp', 'ilike', "%{$search}%")
-              ->orWhere('email', 'ilike', "%{$search}%");
+                ->orWhere('nama', 'ilike', "%{$search}%")
+                ->orWhere('no_hp', 'ilike', "%{$search}%")
+                ->orWhere('email', 'ilike', "%{$search}%");
         });
     }
 
@@ -219,7 +217,7 @@ class Peminjaman extends Model
      */
     public function hariTerlambat(): int
     {
-        if (! $this->isTerlambat()) {
+        if (!$this->isTerlambat()) {
             return 0;
         }
 

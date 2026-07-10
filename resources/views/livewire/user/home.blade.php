@@ -1,9 +1,17 @@
 <?php
 
 use function Livewire\Volt\layout;
-
+use function Livewire\Volt\computed;
+use function Livewire\Volt\state;
+use App\Models\Kendaraan;
+state([
+    'merk' => '',
+    'transmisi' => '',
+]);
 layout('layouts.user');
-
+$merkOptions = computed(function () {
+    return Kendaraan::query()->select('merk')->distinct()->orderBy('merk')->pluck('merk');
+});
 ?>
 
 <div>
@@ -67,16 +75,15 @@ layout('layouts.user');
 
                         {{-- Brand Filter --}}
                         <div class="flex flex-col gap-2">
-                            <label for="brand" class="text-sm font-semibold text-slate-300">Brand</label>
+                            <label for="merk" class="text-sm font-semibold text-slate-300">Brand</label>
                             <div class="relative">
-                                <select id="brand" name="brand"
+                                <select id="merk" name="merk"
                                     class="h-14 w-full appearance-none rounded-2xl border border-white/10 bg-slate-800/50 px-5 text-white transition-all duration-200 focus:bg-slate-800 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 hover:bg-slate-800/80 cursor-pointer">
                                     <option value="" class="bg-slate-800 text-slate-300">Semua Brand</option>
-                                    <option value="honda" class="bg-slate-800 text-white">Honda</option>
-                                    <option value="yamaha" class="bg-slate-800 text-white">Yamaha</option>
-                                    <option value="toyota" class="bg-slate-800 text-white">Toyota</option>
-                                    <option value="daihatsu" class="bg-slate-800 text-white">Daihatsu</option>
-                                    <option value="suzuki" class="bg-slate-800 text-white">Suzuki</option>
+                                    @foreach ($this->merkOptions as $merk)
+                                        <option value="{{ $merk }}" class="bg-slate-800 text-white">
+                                            {{ ucfirst($merk) }}</option>
+                                    @endforeach
                                 </select>
                                 <div
                                     class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
@@ -94,9 +101,9 @@ layout('layouts.user');
                             <div class="relative">
                                 <select id="transmisi" name="transmisi"
                                     class="h-14 w-full appearance-none rounded-2xl border border-white/10 bg-slate-800/50 px-5 text-white transition-all duration-200 focus:bg-slate-800 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 hover:bg-slate-800/80 cursor-pointer">
-                                    <option value="" class="bg-slate-800 text-slate-300">Semua Transmisi</option>
-                                    <option value="manual" class="bg-slate-800 text-white">Manual</option>
-                                    <option value="matic" class="bg-slate-800 text-white">Matic</option>
+                                    <option value="" @selected($transmisi === '')>Semua Transmisi</option>
+                                    <option value="Manual" @selected($transmisi === 'Manual')>Manual</option>
+                                    <option value="Matic" @selected($transmisi === 'Matic')>Matic / Otomatis</option>
                                 </select>
                                 <div
                                     class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">

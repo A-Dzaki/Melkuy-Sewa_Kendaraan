@@ -1,9 +1,18 @@
 <?php
 
 use function Livewire\Volt\layout;
-
+use App\Models\Peminjaman;
+use function Livewire\Volt\state;
+use function Livewire\Volt\with;
+use function Livewire\Volt\usesPagination;
 layout('layouts.admin');
+with(function () {
+    $query = Peminjaman::with(['kendaraan', 'pembayaran'])->latest();
 
+    return [
+        'pemesanans' => $query->paginate(10),
+    ];
+});
 ?>
 
 
@@ -95,7 +104,7 @@ layout('layouts.admin');
         <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="p-6 border-b border-slate-200 flex items-center justify-between">
                 <h3 class="text-lg font-bold text-slate-900">Pemesanan Terbaru</h3>
-                <a href="#"
+                <a href="{{ route('admin.pemesanan') }}"
                     class="text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">Lihat
                     Semua</a>
             </div>
@@ -116,55 +125,85 @@ layout('layouts.admin');
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         <!-- akan melakukan perulangan untuk setiap transaksi -->
-                        {{-- @if ($pemesanan->isNotEmpty())
-                            @foreach ($pemesanan as $transaction)
+                        @if ($pemesanans->isNotEmpty())
+                            @foreach ($pemesanans as $transaction)
                                 <tr class="hover:bg-slate-50/50 transition-colors">
                                     <td class="px-6 py-4 font-mono text-sm font-medium text-slate-900">
-                                        {{ $transaction->code }}</td>
+                                        {{ $transaction->kode_booking }}
+                                    </td>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-3">
                                             <div
                                                 class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xs shrink-0">
-                                                {{ substr($transaction->user->name, 0, 2) }}
+                                                {{ $transaction->initials }}
                                             </div>
                                             <div class="flex flex-col">
                                                 <span
-                                                    class="text-sm font-bold text-slate-900">{{ $transaction->user->name }}</span>
-                                                <span class="text-xs text-slate-500">{{ $transaction->user->phone }}</span>
+                                                    class="text-sm font-bold text-slate-900">{{ $transaction->nama }}</span>
+                                                <span class="text-xs text-slate-500">{{ $transaction->no_hp }}</span>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="flex flex-col">
                                             <span
-                                                class="text-sm font-bold text-slate-900">{{ $transaction->vehicle->name }}</span>
-                                            <span class="text-xs text-slate-500">{{ $transaction->vehicle->category->name }}
-                                                / {{ $transaction->vehicle->transmission }}</span>
+                                                class="text-sm font-bold text-slate-900">{{ $transaction->kendaraan->nama ?? '-' }}</span>
+                                            <span
+                                                class="text-xs text-slate-500">{{ ucfirst($transaction->kendaraan->jenis ?? '-') }}
+                                                / {{ ucfirst($transaction->kendaraan->transmisi ?? '-') }}</span>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <x-badge type="{{ $transaction->status === 'pending' ? 'warning' : 'success' }}">
-                                            {{ ucfirst($transaction->status) }}
+                                        <span class="text-sm text-slate-600">{{ $transaction->jadwal_sewa }}</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="text-sm font-medium text-slate-900">{{ $transaction->formatted_total_harga }}</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        @if ($transaction->pembayaran)
+                                            <span
+                                                class="text-xs font-semibold text-green-600 bg-green-50 px-2 py-1 rounded-md">{{ ucfirst($transaction->pembayaran->metode) }}</span>
+                                        @else
+                                            <span
+                                                class="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-1 rounded-md">Belum
+                                                Dibayar</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <x-badge type="{{ $transaction->status_badge_type }}">
+                                            {{ $transaction->status_label }}
                                         </x-badge>
                                     </td>
+                                    <td class="px-6 py-4 text-center">
+                                        @if (in_array($transaction->status, ['approved', 'paid', 'picked_up']))
+                                            <svg class="w-6 h-6 mx-auto text-slate-400" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                                            </svg>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
                                     <td class="px-6 py-4 text-right">
-                                        <button class="text-slate-400 hover:text-indigo-600 transition-colors">
-                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                                stroke-width="2">
+                                        <a href="{{ route('admin.pemesanan.detail', $transaction->id) }}"
+                                            class="text-slate-400 hover:text-indigo-600 transition-colors">
+                                            <svg class="w-5 h-5 inline-block" fill="none" viewBox="0 0 24 24"
+                                                stroke="currentColor" stroke-width="2">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
                                             </svg>
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach
-                        @else --}}
-                        <tr>
-                            <td colspan="9" class="px-6 py-4 text-center text-sm text-slate-50₀">Tidak ada transaksi
-                                baru.</td>
-                        </tr>
-                        {{-- @endif --}}
-
+                        @else
+                            <tr>
+                                <td colspan="9" class="px-6 py-4 text-center text-sm text-slate-500">Tidak ada
+                                    transaksi baru.</td>
+                            </tr>
+                        @endif
                     </tbody>
                 </table>
             </div>

@@ -92,7 +92,7 @@ class KendaraanFactory extends Factory
 
             $transmisi = fake()->randomElement([
                 'Manual',
-                'Matic',
+                '',
             ]);
 
             $harga = fake()->numberBetween(250000, 700000);

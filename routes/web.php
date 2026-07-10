@@ -71,6 +71,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Volt::route('/pemesanan', 'admin.form-pesanan.pemesanan')
         ->name('pemesanan');
 
+    Volt::route('/pemesanan/{peminjaman}', 'admin.form-pesanan.detail-pemesanan')
+        ->name('pemesanan.detail');
+
     Volt::route('/pembayaran', 'admin.form-pesanan.pembayaran')
         ->name('pembayaran');
 
