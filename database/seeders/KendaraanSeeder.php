@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Kendaraan;
 
 class KendaraanSeeder extends Seeder
 {
@@ -12,6 +13,6 @@ class KendaraanSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        Kendaraan::factory()->count(30)->create();
     }
 }

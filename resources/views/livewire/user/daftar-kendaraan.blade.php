@@ -1,21 +1,26 @@
 <?php
 
-use function Livewire\Volt\layout;
-use function Livewire\Volt\title;
-use function Livewire\Volt\with;
+use Livewire\WithPagination;
+use function Livewire\Volt\{layout, title, state, uses, computed};
+
 use App\Models\Kendaraan;
-use Illuminate\Support\Str;
 
 layout('layouts.user');
-title('Katalog Kendaraan - Melakuy');
+title('Katalog Kendaraan');
 
-with(fn () => [
-    'kendaraans' => Kendaraan::with('images')
-        ->where('status', 'tersedia')
-        ->latest()
-        ->get()
+uses([WithPagination::class]);
+
+state([
+    'jenis_kendaraan' => '',
 ]);
 
+$updatedJenisKendaraan = function () {
+    $this->resetPage();
+};
+
+$kendaraans = computed(function () {
+    return Kendaraan::with('images')->where('status', 'tersedia')->when($this->jenis_kendaraan, fn($q) => $q->where('jenis', $this->jenis_kendaraan))->latest()->paginate(8);
+});
 ?>
 <div class="bg-slate-50 min-h-screen pb-20">
     <!-- Page Header -->
@@ -35,29 +40,18 @@ with(fn () => [
                 </div>
 
                 <!-- Filter Dropdown (Mockup) -->
-                <div class="shrink-0 flex items-center gap-3">
-                    <div class="relative group">
-                        <button
-                            class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                            <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                            </svg>
-                            Filter
-                        </button>
-                    </div>
+                <div class="flex gap-2">
+                    <x-button wire:click="$set('jenis_kendaraan', '')" :variant="$jenis_kendaraan === '' ? 'primary' : 'outline'">
+                        Semua
+                    </x-button>
 
-                    <div class="relative group">
-                        <button
-                            class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                            Urutkan
-                            <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                    </div>
+                    <x-button wire:click="$set('jenis_kendaraan', 'motor')" :variant="$jenis_kendaraan === 'motor' ? 'primary' : 'outline'">
+                        Motor
+                    </x-button>
+
+                    <x-button wire:click="$set('jenis_kendaraan', 'mobil')" :variant="$jenis_kendaraan === 'mobil' ? 'primary' : 'outline'">
+                        Mobil
+                    </x-button>
                 </div>
             </div>
         </div>
@@ -66,15 +60,10 @@ with(fn () => [
     <!-- Kendaraan Grid -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
 
-        @if ($kendaraans->isNotEmpty())
+        @if ($this->kendaraans->total())
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                @foreach ($kendaraans as $kendaraan)
-                    <x-card 
-                        :title="$kendaraan->nama" 
-                        :description="Str::limit($kendaraan->deskripsi, 80)" 
-                        :image="$kendaraan->thumbnail_url" 
-                        :price="'Rp ' . number_format($kendaraan->harga_sewa, 0, ',', '.')" 
-                        status="Tersedia"
+                @foreach ($this->kendaraans as $kendaraan)
+                    <x-card :title="$kendaraan->nama" :description="Str::limit($kendaraan->deskripsi, 80)" :image="$kendaraan->thumbnail_url" :price="'Rp ' . number_format($kendaraan->harga_sewa, 0, ',', '.')" status="Tersedia"
                         link="{{ route('user.detail', $kendaraan->id) }}" />
                 @endforeach
             </div>
@@ -99,34 +88,9 @@ with(fn () => [
         @endif
 
         <!-- Pagination Mockup (jika perlu) -->
-        @if (isset($kendaraans) && count($kendaraans) > 0)
-            <div class="mt-12 flex justify-center">
-                <nav class="inline-flex -space-x-px rounded-xl shadow-sm" aria-label="Pagination">
-                    <a href="#"
-                        class="relative inline-flex items-center rounded-l-xl border border-slate-300 bg-white px-2 py-2 text-sm font-medium text-slate-500 hover:bg-slate-50">
-                        <span class="sr-only">Previous</span>
-                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd"
-                                d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
-                                clip-rule="evenodd" />
-                        </svg>
-                    </a>
-                    <a href="#" aria-current="page"
-                        class="relative z-10 inline-flex items-center border border-indigo-500 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-600 focus:z-20">1</a>
-                    <a href="#"
-                        class="relative inline-flex items-center border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-50 focus:z-20">2</a>
-                    <a href="#"
-                        class="relative inline-flex items-center border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-50 focus:z-20">3</a>
-                    <a href="#"
-                        class="relative inline-flex items-center rounded-r-xl border border-slate-300 bg-white px-2 py-2 text-sm font-medium text-slate-500 hover:bg-slate-50">
-                        <span class="sr-only">Next</span>
-                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd"
-                                d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                                clip-rule="evenodd" />
-                        </svg>
-                    </a>
-                </nav>
+        @if ($this->kendaraans->hasPages())
+            <div class="mt-12">
+                {{ $this->kendaraans->links() }}
             </div>
         @endif
     </div>
