@@ -14,13 +14,31 @@ mount(function (Peminjaman $peminjaman) {
 });
 
 $approve = function () {
-    $this->peminjaman->update(['status' => 'approved']);
+    $this->peminjaman->update(['status' => 'paid']);
+    
+    if ($this->peminjaman->pembayaran && $this->peminjaman->pembayaran->metode === 'transfer') {
+        $this->peminjaman->pembayaran()->update(['status' => 'verified']);
+    }
+
     session()->flash('success', 'Pesanan berhasil disetujui.');
 };
 
 $reject = function () {
     $this->peminjaman->update(['status' => 'cancelled']);
+    if ($this->peminjaman->pembayaran) {
+        $this->peminjaman->pembayaran()->update(['status' => 'rejected']);
+    }
     session()->flash('success', 'Pesanan berhasil ditolak.');
+};
+
+$pickup = function () {
+    $this->peminjaman->update(['status' => 'picked_up']);
+    
+    if ($this->peminjaman->pembayaran && $this->peminjaman->pembayaran->metode === 'cash' && $this->peminjaman->pembayaran->status === 'pending') {
+        $this->peminjaman->pembayaran()->update(['status' => 'verified']);
+    }
+    
+    session()->flash('success', 'Kendaraan berhasil ditandai sebagai diambil.');
 };
 
 ?>
@@ -35,6 +53,11 @@ $reject = function () {
             <x-button href="{{ route('admin.pemesanan') }}" variant="outline">
                 Kembali
             </x-button>
+            @if(in_array($peminjaman->status, ['approved', 'paid', 'menunggu_verifikasi']))
+                <x-button @click="openConfirm = true; action = 'pickup'; message = 'Tandai kendaraan ini sudah diambil oleh pelanggan?'" variant="success">
+                    Tandai Diambil
+                </x-button>
+            @endif
             @if($peminjaman->status === 'pending')
                 <x-button @click="openConfirm = true; action = 'reject'; message = 'Apakah Anda yakin ingin menolak pesanan ini?'" variant="danger">
                     Tolak
@@ -170,6 +193,28 @@ $reject = function () {
                     <div class="text-sm text-slate-500">Kendaraan tidak ditemukan atau telah dihapus.</div>
                 @endif
             </div>
+
+            <!-- Bukti Pembayaran -->
+            @if($peminjaman->pembayaran && $peminjaman->pembayaran->metode === 'transfer')
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+                <h3 class="text-lg font-bold text-slate-900 mb-4">Bukti Pembayaran</h3>
+                @if($peminjaman->pembayaran->bukti_url)
+                    <div class="bg-slate-50 rounded-xl p-2 border border-slate-100 mb-4 flex justify-center">
+                        <img src="{{ $peminjaman->pembayaran->bukti_url }}" alt="Bukti Pembayaran" class="max-w-full rounded-lg shadow-sm" style="max-height: 300px; object-fit: contain;">
+                    </div>
+                    <a href="{{ $peminjaman->pembayaran->bukti_url }}" target="_blank" class="text-sm text-indigo-600 hover:text-indigo-700 font-semibold flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                        Buka Gambar Penuh
+                    </a>
+                @else
+                    <div class="text-sm text-slate-500 text-center py-4 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                        Bukti pembayaran belum diunggah.
+                    </div>
+                @endif
+            </div>
+            @endif
         </div>
     </div>
 
@@ -195,16 +240,23 @@ $reject = function () {
                 
                 <div class="flex items-start gap-4 mb-6">
                     <div class="w-12 h-12 flex-shrink-0 flex items-center justify-center rounded-full"
-                         :class="action === 'reject' ? 'bg-rose-100 text-rose-600' : 'bg-indigo-100 text-indigo-600'">
-                        <svg x-show="action === 'reject'" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                         :class="{
+                             'bg-rose-100 text-rose-600': action === 'reject',
+                             'bg-indigo-100 text-indigo-600': action === 'approve',
+                             'bg-emerald-100 text-emerald-600': action === 'pickup'
+                         }">
+                        <svg x-show="action === 'reject'" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display: none;">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
                         <svg x-show="action === 'approve'" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display: none;">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
+                        <svg x-show="action === 'pickup'" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display: none;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
                     </div>
                     <div>
-                        <h3 class="text-lg font-bold text-slate-900" x-text="action === 'reject' ? 'Konfirmasi Penolakan' : 'Konfirmasi Persetujuan'"></h3>
+                        <h3 class="text-lg font-bold text-slate-900" x-text="action === 'reject' ? 'Konfirmasi Penolakan' : (action === 'approve' ? 'Konfirmasi Persetujuan' : 'Konfirmasi Pengambilan')"></h3>
                         <p class="text-sm text-slate-500 mt-1" x-text="message"></p>
                     </div>
                 </div>
@@ -213,8 +265,12 @@ $reject = function () {
                     <button @click="openConfirm = false" class="px-4 py-2 text-sm font-semibold text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-200">
                         Batal
                     </button>
-                    <button @click="openConfirm = false; if(action === 'reject') { $wire.reject() } else { $wire.approve() }"
-                            :class="action === 'reject' ? 'bg-rose-600 hover:bg-rose-700 focus:ring-rose-500 shadow-rose-500/30' : 'bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 shadow-indigo-500/30'"
+                    <button @click="openConfirm = false; if(action === 'reject') { $wire.reject() } else if(action === 'approve') { $wire.approve() } else { $wire.pickup() }"
+                            :class="{
+                                'bg-rose-600 hover:bg-rose-700 focus:ring-rose-500 shadow-rose-500/30': action === 'reject',
+                                'bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 shadow-indigo-500/30': action === 'approve',
+                                'bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-500 shadow-emerald-500/30': action === 'pickup'
+                            }"
                             class="px-4 py-2 text-sm font-semibold text-white rounded-lg shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
                         Ya, Lanjutkan
                     </button>

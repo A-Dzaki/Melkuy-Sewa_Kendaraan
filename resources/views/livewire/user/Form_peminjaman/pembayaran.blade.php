@@ -47,36 +47,40 @@ $save = function () {
     }
 
     try {
-        $path = null;
+        $path = '';
         if ($this->metode_pembayaran === 'transfer' && $this->bukti_transfer) {
             $path = $this->bukti_transfer->store('pembayaran', 'public');
         }
+
+        $statusPembayaran = 'pending';
 
         Pembayaran::create([
             'peminjaman_id' => $this->peminjaman->id,
             'metode' => $this->metode_pembayaran,
             'jumlah' => $this->peminjaman->total_harga,
             'bukti' => $path,
-            'status' => 'pending',
+            'status' => $statusPembayaran,
             'dibayar_pada' => now(),
         ]);
 
+        $statusPeminjaman = 'pending';
+
         $this->peminjaman->update([
-            'status' => 'menunggu_verifikasi',
+            'status' => $statusPeminjaman,
         ]);
 
         $this->sudahDibayar = true;
 
         $successMessage = $this->metode_pembayaran === 'cash'
-            ? 'Pembayaran tunai berhasil dikonfirmasi! Mohon siapkan uang tunai saat pengambilan kendaraan.'
-            : 'Bukti pembayaran berhasil diunggah! Mohon tunggu verifikasi admin.';
+            ? 'Pemesanan tunai berhasil dikonfirmasi! Mohon siapkan uang tunai saat pengambilan kendaraan.'
+            : 'Bukti pembayaran berhasil diunggah dan diverifikasi! Mohon tunggu instruksi pengambilan kendaraan.';
 
         $this->dispatch('pembayaran-sukses', 
             message: $successMessage,
             metode: $this->metode_pembayaran,
         );
     } catch (\Exception $e) {
-        session()->flash('error', 'Terjadi kesalahan saat memproses pembayaran. Silakan coba lagi.');
+        session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage() . ' di baris ' . $e->getLine());
     }
 };
 
