@@ -24,12 +24,12 @@ $kendaraans = computed(function () {
 ?>
 <div class="bg-slate-50 min-h-screen pb-20">
     <!-- Page Header -->
-    <div class="bg-white border-b border-slate-200 pt-8 pb-12">
+    <div class="bg-[#eff0f3] border-b border-slate-200 pt-8 pb-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div class="max-w-2xl">
                     <span
-                        class="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-indigo-600 mb-4 border border-indigo-100">
+                        class="inline-flex items-center rounded-full bg-[#ff8e3c] px-3 py-1 text-xs font-semibold uppercase tracking-widest text-white mb-4 border border-[#ff8e3c]">
                         Katalog Kendaraan
                     </span>
                     <h1 class="text-3xl font-black text-slate-900 sm:text-4xl tracking-tight">Pilih kendaraan yang paling

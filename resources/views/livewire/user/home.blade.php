@@ -31,13 +31,12 @@ $merkOptions = computed(function () {
         <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-12 pb-24">
             <div class="max-w-3xl">
                 <span
-                    class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 backdrop-blur-sm mb-6 shadow-[0_0_15px_rgba(99,102,241,0.2)]">
+                    class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase bg-[#ff8e3c]/10 text-white border border-[#fffffe]/20 backdrop-blur-sm mb-6 shadow-[0_0_15px_rgba(245, 245, 247, 0.2)]">
                     Melakuy, Pinjam dan Jalan
                 </span>
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
                     Temukan Kendaraan <br class="hidden md:block" />
-                    <span
-                        class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-400">Petualangan
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#ff8e3c] to-[#764c09]">Petualangan
                         Barumu</span>
                 </h1>
                 <p class="text-lg text-slate-300 mb-10 max-w-2xl leading-relaxed">
@@ -54,19 +53,7 @@ $merkOptions = computed(function () {
                         <h2 class="text-xl font-bold text-white">Cari Kendaraan Impianmu</h2>
                         <p class="text-sm text-slate-400 mt-1">Pilih kriteria sesuai kebutuhan perjalanan Anda.</p>
                     </div>
-                    <div
-                        class="inline-flex items-center gap-2 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-2.5 backdrop-blur-sm">
-                        <span class="relative flex h-3 w-3">
-                            <span
-                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                        </span>
-                        <div class="flex flex-col">
-                            <span
-                                class="text-[10px] uppercase tracking-widest text-emerald-300 font-semibold leading-none">Tersedia</span>
-                            <span class="text-sm font-bold text-emerald-100 leading-none mt-1">100+ Unit</span>
-                        </div>
-                    </div>
+
                 </div>
 
                 {{-- Form GET → redirect ke halaman pencarian dengan filter di URL --}}
@@ -78,7 +65,7 @@ $merkOptions = computed(function () {
                             <label for="merk" class="text-sm font-semibold text-slate-300">Brand</label>
                             <div class="relative">
                                 <select id="merk" name="merk"
-                                    class="h-14 w-full appearance-none rounded-2xl border border-white/10 bg-slate-800/50 px-5 text-white transition-all duration-200 focus:bg-slate-800 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 hover:bg-slate-800/80 cursor-pointer">
+                                    class="h-14 w-full appearance-none rounded-2xl border border-white/10 bg-slate-800/50 px-5 text-white transition-all duration-200 focus:bg-slate-800 focus:border-[#ff8e3c] focus:outline-none focus:ring-4 focus:ring-[#ff8e3c]/20 hover:bg-slate-800/80 cursor-pointer">
                                     <option value="" class="bg-slate-800 text-slate-300">Semua Brand</option>
                                     @foreach ($this->merkOptions as $merk)
                                         <option value="{{ $merk }}" class="bg-slate-800 text-white">
@@ -100,7 +87,7 @@ $merkOptions = computed(function () {
                             <label for="transmisi" class="text-sm font-semibold text-slate-300">Transmisi</label>
                             <div class="relative">
                                 <select id="transmisi" name="transmisi"
-                                    class="h-14 w-full appearance-none rounded-2xl border border-white/10 bg-slate-800/50 px-5 text-white transition-all duration-200 focus:bg-slate-800 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 hover:bg-slate-800/80 cursor-pointer">
+                                    class="h-14 w-full appearance-none rounded-2xl border border-white/10 bg-slate-800/50 px-5 text-white transition-all duration-200 focus:bg-slate-800 focus:border-[#ff8e3c] focus:outline-none focus:ring-4 focus:ring-[#ff8e3c]/20 hover:bg-slate-800/80 cursor-pointer">
                                     <option value="" @selected($transmisi === '')>Semua Transmisi</option>
                                     <option value="Manual" @selected($transmisi === 'Manual')>Manual</option>
                                     <option value="Matic" @selected($transmisi === 'Matic')>Matic / Otomatis</option>
@@ -121,7 +108,7 @@ $merkOptions = computed(function () {
                                 Kendaraan</label>
                             <div class="relative">
                                 <select id="jenis_kendaraan" name="jenis_kendaraan"
-                                    class="h-14 w-full appearance-none rounded-2xl border border-white/10 bg-slate-800/50 px-5 text-white transition-all duration-200 focus:bg-slate-800 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 hover:bg-slate-800/80 cursor-pointer">
+                                    class="h-14 w-full appearance-none rounded-2xl border border-white/10 bg-slate-800/50 px-5 text-white transition-all duration-200 focus:bg-slate-800 focus:border-[#ff8e3c] focus:outline-none focus:ring-4 focus:ring-[#ff8e3c]/20 hover:bg-slate-800/80 cursor-pointer">
                                     <option value="" class="bg-slate-800 text-slate-300">Semua Jenis</option>
                                     <option value="mobil" class="bg-slate-800 text-white">Mobil</option>
                                     <option value="motor" class="bg-slate-800 text-white">Motor</option>
@@ -138,7 +125,7 @@ $merkOptions = computed(function () {
 
                         {{-- Submit --}}
                         <button type="submit"
-                            class="h-14 w-full rounded-2xl bg-indigo-600 px-6 font-bold text-white shadow-lg shadow-indigo-600/30 transition-all duration-300 hover:bg-indigo-500 hover:shadow-xl hover:shadow-indigo-500/40 hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2">
+                            class="h-14 w-full rounded-2xl bg-[#ff8e3c] px-6 font-bold text-white shadow-lg shadow-[#ff8e3c]/30 transition-all duration-300 hover:bg-[#ff6b00] hover:shadow-xl hover:shadow-[#ff6b00]/40 hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round"

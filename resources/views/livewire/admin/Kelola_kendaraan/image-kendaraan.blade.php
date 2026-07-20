@@ -28,11 +28,11 @@ $images = computed(function () {
 $uploadPhotos = function () {
     $this->validate([
         'photos' => 'required|array|min:1',
-        'photos.*' => 'image|mimes:jpeg,jpg,png,webp|max:2048',
+        'photos.*' => 'image|mimes:jpeg,jpg,png|max:2048',
     ], [
         'photos.required' => 'Pilih minimal satu gambar.',
         'photos.*.image' => 'File harus berupa gambar.',
-        'photos.*.mimes' => 'Format yang didukung: JPEG, PNG, WebP.',
+        'photos.*.mimes' => 'Format yang didukung: JPEG/PNG.',
         'photos.*.max' => 'Ukuran maksimal per gambar adalah 2MB.',
     ]);
 
@@ -182,9 +182,9 @@ $removeUploadedPhoto = function (int $index) {
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                             </svg>
                             Pilih File
-                            <input type="file" wire:model="photos" multiple accept="image/jpeg,image/png,image/webp" class="hidden">
+                            <input type="file" wire:model="photos" multiple accept="image/jpeg,image/png" class="hidden">
                         </label>
-                        <p class="text-xs text-slate-400 mt-3">JPEG, PNG, WebP · Maks. 2MB per file · Maks. {{ 5 - $this->images->count() }} gambar lagi</p>
+                        <p class="text-xs text-slate-400 mt-3">JPEG, PNG · Maks. 2MB per file · Maks. {{ 5 - $this->images->count() }} gambar lagi</p>
                     </div>
 
                     {{-- Upload Errors --}}

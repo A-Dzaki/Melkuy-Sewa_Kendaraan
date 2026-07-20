@@ -98,7 +98,7 @@ $hasil = computed(function () {
         <div class="max-w-4xl mx-auto mb-12">
             <div
                 class="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden relative">
-                <div class="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-indigo-500 to-violet-500"></div>
+                <div class="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-[#ff8e3c] to-[#ff8e3c]/50"></div>
 
                 <div class="p-6 md:p-10">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
